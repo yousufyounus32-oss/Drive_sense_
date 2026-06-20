@@ -71,6 +71,49 @@ All three nodes communicate over a shared **CAN2 bus at 125 kbps**, each node id
 | CAN Transceiver (e.g. TJA1050) | Physical layer for CAN2 bus |
 | USB-to-UART module | Serial debug console (Node B, Node C) |
 
+# Drive Sense — Pin Connection Reference
+
+
+## Node A — Temperature & Ultrasonic Node
+
+| Signal | Pin | Direction | Notes |
+|---|---|---|---|
+| Ultrasonic TRIG | P0.10 | Output | HC-SR04 trigger pulse |
+| Ultrasonic ECHO | P0.11 | Input | HC-SR04 echo pulse, timed via Timer1 |
+| Buzzer | P0.12 | Output | Active-low (IOCLR0 = ON, IOSET0 = OFF) |
+| LM35 Temp Sensor | P0.27 (AD0.1) | Analog Input | Configured via PINSEL1, 10-bit ADC |
+| CAN2 TX (TD2) | P0.23 | — | CAN2 bus, 125 kbps |
+| CAN2 RX (RD2) | P0.24 | — | CAN2 bus, 125 kbps |
+| LCD Data D4–D7 | P0.4–P0.7 | Output | 4-bit LCD interface |
+| LCD RS | P0.15 | Output | Register select |
+| LCD EN | P0.16 | Output | Enable strobe |
+
+## Node B — Fuel & Light Node ("Yousuf Node")
+
+| Signal | Pin | Direction | Notes |
+|---|---|---|---|
+| Fuel Level Sensor | P0.27 (AD0.1) | Analog Input | Same ADC channel config as Node A |
+| LDR Module | P0.17 | Digital Input | Defaults to input on reset (not explicitly set — recommend adding `IODIR0 &= ~(1<<17);`) |
+| Status LED | P0.16 | Output | Toggled based on LDR reading |
+| CAN2 TX (TD2) | P0.23 | — | CAN2 bus, 125 kbps |
+| CAN2 RX (RD2) | P0.24 | — | CAN2 bus, 125 kbps |
+| UART0 TXD | P0.0 | Output | 115200 baud, debug console |
+| UART0 RXD | P0.1 | Input | 115200 baud |
+
+## Node C — Dashboard Receiver Node
+
+| Signal | Pin | Direction | Notes |
+|---|---|---|---|
+| Status LED | P0.17 | Output | Mirrors Node B light status |
+| LCD Data D4–D7 | P0.4–P0.7 | Output | 4-bit LCD interface |
+| LCD RS | P0.15 | Output | Register select |
+| LCD EN | P0.16 | Output | Enable strobe |
+| CAN2 TX (TD2) | P0.23 | — | CAN2 bus, 125 kbps |
+| CAN2 RX (RD2) | P0.24 | — | CAN2 bus, 125 kbps |
+| UART0 TXD | P0.0 | Output | 115200 baud, debug console |
+| UART0 RXD | P0.1 | Input | 115200 baud |
+
+
 ## Technical Stack
 
 - **Language:** Embedded C
